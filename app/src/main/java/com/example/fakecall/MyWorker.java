@@ -44,7 +44,7 @@ public class MyWorker extends Worker {
         Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
         r.play();
 
-        Intent intent = new Intent(mcontext, MainActivity.class);
+        Intent intent = new Intent(mcontext, RingScreen.class);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
         mcontext.startActivity(intent);
 //        new Handler(Looper.getMainLooper()).post(new Runnable() {
