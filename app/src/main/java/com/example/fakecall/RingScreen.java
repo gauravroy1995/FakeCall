@@ -3,22 +3,27 @@ package com.example.fakecall;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.Context;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,6 +34,14 @@ public class RingScreen extends AppCompatActivity {
 
     ConstraintLayout PhoneLayout;
 
+    ConstraintLayout BottomConstraint;
+    Ringtone ring;
+    ConstraintLayout AnsweredScreen;
+
+    ImageView endButton;
+
+    Vibrator vibrator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +51,17 @@ public class RingScreen extends AppCompatActivity {
 
         MarqueeText = (TextView) this.findViewById(R.id.maruqeeText);
         MarqueeText.setSelected(true);
+
+        endButton = findViewById(R.id.endCallButton);
+        endButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishAffinity();
+                System.exit(0);
+            }
+        });
+
+        BottomConstraint = findViewById(R.id.bottomConstraint);
 
         PhoneLayout = this.findViewById(R.id.callPhoneLayout);
         final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.rotate);
@@ -60,6 +84,8 @@ public class RingScreen extends AppCompatActivity {
         });
 
         PhoneLayout.setOnDragListener(new  View.OnDragListener() {
+            int initialCoord = 80;
+            int finalCoord = 80;
             @Override
             public boolean onDrag(View v, DragEvent event) {
                 switch(event.getAction()) {
@@ -80,18 +106,39 @@ public class RingScreen extends AppCompatActivity {
                         Log.d("yes", "Action is DragEvent.ACTION_DRAG_EXITED");
                         x_cord = (int) event.getX();
                         y_cord = (int) event.getY();
+                        Log.d("yes", "Action is DragEvent.EXITED"+Integer.toString(y_cord));
                         break;
 
                     case DragEvent.ACTION_DRAG_LOCATION  :
                         Log.d("yes", "Action is DragEvent.ACTION_DRAG_LOCATION");
                         x_cord = (int) event.getX();
                         y_cord = (int) event.getY();
+                        // swipe up
+                        if(y_cord == 0){
+                            BottomConstraint.setVisibility(View.GONE);
+                            AnsweredScreen.setVisibility(View.VISIBLE);
+                        }
+                        // swipe down
+                        if(y_cord > 153){
+                            finishAffinity();
+                            System.exit(0);
+                        }
+                        Log.d("yes", "Action is DragEvent.ACTION_DRAG_LOCATION"+Integer.toString(y_cord));
+                        Integer.toHexString(y_cord);
+                        finalCoord = Math.abs(initialCoord- y_cord);
 
-                        v.setBackgroundColor( getResources().getColor(R.color.design_default_color_background));
+                        float finalF = (float)(finalCoord/80);
+
+
+                        v.setAlpha(finalF);
+
+//                        v.setBackgroundColor( getResources().getColor(R.color.design_default_color_background));
                         break;
 
                     case DragEvent.ACTION_DRAG_ENDED   :
                         Log.d("yes", "Action is DragEvent.ACTION_DRAG_ENDED");
+
+                        v.setAlpha(1);
 
                         // Do nothing
                         break;
@@ -111,6 +158,36 @@ public class RingScreen extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             changeStatusBarColor();
         }
+
+        startVibration();
+
+        AnsweredScreen = findViewById(R.id.answerScreen);
+    }
+
+
+    void startVibration(){
+        // Get instance of Vibrator from current Context
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+// Start without a delay
+// Vibrate for 100 milliseconds
+// Sleep for 1000 milliseconds
+        long[] pattern = {0, 300, 2000};
+
+// The '0' here means to repeat indefinitely
+// '0' is actually the index at which the pattern keeps repeating from (the start)
+// To repeat the pattern from any other point, you could increase the index, e.g. '1'
+        vibrator.vibrate(pattern, 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        exitTheApp();
+        super.onBackPressed();
+    }
+
+    void exitTheApp(){
+        finishAffinity();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -128,7 +205,14 @@ public class RingScreen extends AppCompatActivity {
 //        WorkManager.getInstance(getApplicationContext()).enqueue(workRequest);
 
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-        r.play();
+        ring = RingtoneManager.getRingtone(getApplicationContext(), notification);
+        ring.play();
+    }
+
+    @Override
+    protected void onStop() {
+        vibrator.cancel();
+        ring.stop();
+        super.onStop();
     }
 }

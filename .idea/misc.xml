@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/studies/Android app/Fakecall/app/src/main/res/drawable/black_gradient.xml" value="0.1" />
+        <entry key="..\:/studies/Android app/Fakecall/app/src/main/res/drawable/round_call.xml" value="0.1" />
+        <entry key="..\:/studies/Android app/Fakecall/app/src/main/res/drawable/round_decline_call.xml" value="0.1" />
+        <entry key="..\:/studies/Android app/Fakecall/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/studies/Android app/Fakecall/app/src/main/res/layout/activity_ring_screen.xml" value="0.281947261663286" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
