@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -51,6 +52,8 @@ public class RingScreen extends AppCompatActivity {
 
         MarqueeText = (TextView) this.findViewById(R.id.maruqeeText);
         MarqueeText.setSelected(true);
+
+        Chronometer simpleChronometer = (Chronometer) findViewById(R.id.simpleChronometer); // initiate a chronometer
 
         endButton = findViewById(R.id.endCallButton);
         endButton.setOnClickListener(new View.OnClickListener() {
@@ -114,9 +117,13 @@ public class RingScreen extends AppCompatActivity {
                         x_cord = (int) event.getX();
                         y_cord = (int) event.getY();
                         // swipe up
-                        if(y_cord == 0){
+                        if(y_cord < 10){
                             BottomConstraint.setVisibility(View.GONE);
                             AnsweredScreen.setVisibility(View.VISIBLE);
+                            simpleChronometer.setVisibility(View.VISIBLE);
+                            simpleChronometer.start();
+                            vibrator.cancel();
+                            ring.stop();
                         }
                         // swipe down
                         if(y_cord > 153){

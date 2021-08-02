@@ -40,6 +40,15 @@
             android:scrollHorizontally="true"
             android:textColor="#FFFFFF"
             android:textSize="45dp" />
+
+        <Chronometer
+            android:id="@+id/simpleChronometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
